@@ -10,7 +10,7 @@ export default function RaceControl() {
         </h2>
 
         <div className="bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-lg p-6 text-center animate-border-flow">
-          <p className="text-gray-300 text-sm sm:text-base">Template Section — Coming Soon</p>
+          <p className="text-gray-300 text-sm sm:text-base"> Coming Soon</p>
         </div>
       </div>
     </section>
