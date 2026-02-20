@@ -6,7 +6,7 @@ export default function RaceControl() {
     >
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-6 animate-neon-glow">
-          RACE CONTROL
+          CONTACT
         </h2>
 
         <div className="bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-lg p-6 text-center animate-border-flow">

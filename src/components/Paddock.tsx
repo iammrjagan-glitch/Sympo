@@ -96,7 +96,7 @@ export default function Paddock() {
       id="paddock"
       className="py-12 sm:py-16 px-3 sm:px-4 relative"
       style={{
-        backgroundImage: 'url(https://images.pexels.com/photos/163210/pexels-photo-163210.jpeg?auto=compress&cs=tinysrgb&w=1920)',
+        backgroundImage: 'url(https://res.cloudinary.com/dkyvctkhf/image/upload/v1771483014/wxtoryrid7adydn0vkv8.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -113,7 +113,7 @@ export default function Paddock() {
         <h2 className={`text-4xl md:text-6xl font-bold text-white text-center mb-16 tracking-wider transition-all duration-700 animate-neon-glow ${
           isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
         }`}>
-          THE PADDOCK
+          ABOUT
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">

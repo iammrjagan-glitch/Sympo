@@ -25,7 +25,7 @@ interface Event {
 
 const events: Event[] = [
   {
-    title: 'THE GRAND PRIX OF IDEAS',
+    title: 'THE GRAND PRIX OF IDEAs',
     description: 'The ultimate test of knowledge and research.',
   },
   {
@@ -48,7 +48,7 @@ const events: Event[] = [
     title: 'GRAND PRIZE POOL',
     description: 'Compete for your share of the total prize money!',
     isPrize: true,
-    prizeAmount: '₹13500',
+    prizeAmount: '₹',
     prizeNote: 'More exciting prizes to be announced!',
   },
 ];
@@ -124,7 +124,7 @@ export default function Circuits() {
       id="circuits"
       className="min-h-screen py-20 px-4 relative"
       style={{
-        backgroundImage: 'url(https://images.pexels.com/photos/358278/pexels-photo-358278.jpeg?auto=compress&cs=tinysrgb&w=1920)',
+        backgroundImage: 'url(https://res.cloudinary.com/dkyvctkhf/image/upload/v1771483014/wxtoryrid7adydn0vkv8.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -141,7 +141,7 @@ export default function Circuits() {
         <h2 className={`text-4xl md:text-6xl font-bold text-white text-center mb-16 tracking-wider transition-all duration-700 animate-neon-glow ${
           isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
         }`}>
-          THE CIRCUITS
+          THE EVENTS
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

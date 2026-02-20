@@ -14,7 +14,7 @@ const Sparkle = ({ delay }: { delay: number }) => (
 );
 
 export default function Hero() {
-  const targetDate = new Date('2026-03-18T00:00:00').getTime();
+  const targetDate = new Date('2026-02-18T00:00:00').getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -73,7 +73,7 @@ export default function Hero() {
       id="hero"
       className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16 perspective"
       style={{
-        backgroundImage: 'url(https://images.pexels.com/photos/358278/pexels-photo-358278.jpeg?auto=compress&cs=tinysrgb&w=1920)',
+        backgroundImage: 'url(https://res.cloudinary.com/dkyvctkhf/image/upload/v1771483014/wxtoryrid7adydn0vkv8.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -108,7 +108,7 @@ export default function Hero() {
         </p>
 
         <p className="text-lg sm:text-2xl md:text-3xl text-white font-bold mb-8 tracking-wide animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          EVENT DATE: MARCH 18, 2026
+          EVENT DATE: 2026
         </p>
 
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 perspective">
