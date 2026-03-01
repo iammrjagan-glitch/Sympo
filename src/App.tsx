@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import Paddock from './components/Paddock';
@@ -6,10 +5,6 @@ import Circuits from './components/Circuits';
 import RaceControl from './components/RaceControl';
 
 function App() {
-  useEffect(() => {
-    document.title = "YANTRA 26 - Technical Symposium";
-  }, []);
-
   return (
     <div className="min-h-screen bg-black">
       <Navigation />
