@@ -1,5 +1,5 @@
 import { Calendar, MapPin, Users } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 
 const stats = [
@@ -29,11 +29,15 @@ export default function AboutGear() {
     offset: ["start end", "center center"],
   });
 
-  // Gear enters from left
-  const gearX = useTransform(scrollYProgress, [0, 0.6], [-500, -150]);
+  // Gear enters from left (raw transforms)
+  const rawGearX = useTransform(scrollYProgress, [0, 0.6], [-500, -150]);
 
-  // Gear rotation
-  const gearRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
+  // Gear rotation (raw transform)
+  const rawGearRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
+
+  // Smooth the transforms with springs for a gentler mobile experience
+  const gearX = useSpring(rawGearX, { damping: 22, stiffness: 120 });
+  const gearRotate = useSpring(rawGearRotate, { damping: 26, stiffness: 90 });
 
   // Content fade in
   const contentOpacity = useTransform(scrollYProgress, [0.5, 1], [0, 1]);

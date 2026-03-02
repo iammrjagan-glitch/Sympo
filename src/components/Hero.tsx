@@ -118,7 +118,7 @@ export default function Hero() {
 
       <section
         ref={heroRef}
-        className="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden"
+        className="min-h-screen flex items-center justify-center relative pt-16"
         style={{
           backgroundImage:
             "url(https://res.cloudinary.com/dkyvctkhf/image/upload/v1771483014/wxtoryrid7adydn0vkv8.jpg)",
