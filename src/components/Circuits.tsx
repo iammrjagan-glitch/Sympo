@@ -1,8 +1,8 @@
 import { ArrowRight } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 ////////////////////////////////////////////////////////////
-// Sparkle
+// Sparkle particle
 ////////////////////////////////////////////////////////////
 
 const Sparkle = ({ delay }: { delay: number }) => (
@@ -12,9 +12,39 @@ const Sparkle = ({ delay }: { delay: number }) => (
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       animationDelay: `${delay}s`,
+      boxShadow: `
+        0 0 6px rgba(255,215,0,0.9),
+        0 0 12px rgba(255,215,0,0.6)
+      `,
     }}
   />
 );
+
+////////////////////////////////////////////////////////////
+// Scroll visibility hook (re-triggers every scroll)
+////////////////////////////////////////////////////////////
+
+function useScrollReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.2,
+      }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, visible };
+}
 
 ////////////////////////////////////////////////////////////
 // Event Data
@@ -35,162 +65,111 @@ const events: Event[] = [
   },
   {
     title: "CHASSIS DESIGN CHALLENGE",
-    description: "Design your way to victory with precision.",
+    description: "Design your way to victory with precision and creativity.",
   },
   {
     title: "POLE POSITION QUIZ",
-    description: "Rapid-fire technical battle.",
+    description: "Challenge your wits in this rapid-fire quiz.",
   },
   {
     title: "ADVERTISEMENT MAKING SHOWCASE",
-    description: "Sell your engineering vision.",
+    description: "Unleash your creativity and sell your ideas.",
   },
   {
     title: "PADDOCK PASS AUCTION",
-    description: "Build your dream team strategically.",
+    description: "Strategize and build your dream team!",
   },
   {
     title: "GRAND PRIZE POOL",
-    description: "Win the ultimate reward.",
+    description: "Compete for your share of prize money!",
     isPrize: true,
     prizeAmount: "₹",
-    prizeNote: "More prizes coming soon",
+    prizeNote: "More prizes to be announced!",
   },
 ];
 
 ////////////////////////////////////////////////////////////
-// Card Component with true ignition observer
+// Event Card
 ////////////////////////////////////////////////////////////
 
-function EventCard({ event, index }: { event: Event; index: number }) {
-
+function EventCard({
+  event,
+  index,
+  visible,
+}: {
+  event: Event;
+  index: number;
+  visible: boolean;
+}) {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null);
 
-  const [ignite, setIgnite] = useState(false);
-
-  ////////////////////////////////////////////////////////////
-  // Replay ignition on scroll enter EVERY TIME
-  ////////////////////////////////////////////////////////////
-
-  useEffect(() => {
-
-    const observer = new IntersectionObserver(
-
-      ([entry]) => {
-
-        if (entry.isIntersecting) {
-
-          setIgnite(false);
-
-          setTimeout(() => {
-
-            setIgnite(true);
-
-          }, 50);
-
-        }
-
-      },
-
-      {
-        threshold: 0.6,
-      }
-
-    );
-
-    if (ref.current) observer.observe(ref.current);
-
-    return () => observer.disconnect();
-
-  }, []);
-
-  ////////////////////////////////////////////////////////////
-  // Mouse tilt only desktop
-  ////////////////////////////////////////////////////////////
-
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMove = (e: React.MouseEvent) => {
-
+  const handleMouseMove = (e: React.MouseEvent) => {
     if (window.innerWidth < 768) return;
 
     const rect = ref.current?.getBoundingClientRect();
-
     if (!rect) return;
 
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-    setTilt({
-      x: x * 10,
-      y: y * 10,
+    setMousePos({
+      x: x * 15,
+      y: y * 15,
     });
-
   };
 
-  const resetTilt = () => setTilt({ x: 0, y: 0 });
-
-  ////////////////////////////////////////////////////////////
+  const handleLeave = () => {
+    setMousePos({ x: 0, y: 0 });
+  };
 
   return (
-
     <div
       ref={ref}
-      onMouseMove={handleMove}
-      onMouseLeave={resetTilt}
-      className={`
-        ignition-card
-        ${ignite ? "ignite glow" : ""}
-      `}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleLeave}
+      className={`ignition-card ${visible ? "ignite" : ""}`}
       style={{
-        animationDelay: `${index * 0.15}s`,
+        animationDelay: `${index * 0.2}s`,
         transform: `
           perspective(1000px)
-          rotateX(${-tilt.y}deg)
-          rotateY(${tilt.x}deg)
+          rotateX(${-mousePos.y * 0.05}deg)
+          rotateY(${mousePos.x * 0.05}deg)
         `,
       }}
     >
+      <div className="ignition-border"></div>
+      <div className="ignition-corner"></div>
 
-      {/* ignition line */}
-      <div className="ignition-line"></div>
-
-      {/* ignition flash */}
-      <div className="ignition-flash"></div>
-
-      {/* content */}
       <div className="ignition-content">
 
-        <h3 className="title">
+        <h3 className="text-yellow-400 font-bold text-base md:text-xl mb-2 uppercase">
           {event.title}
         </h3>
 
-        <p className="desc">
+        <p className="text-gray-300 text-sm md:text-base mb-3">
           {event.description}
         </p>
 
         {event.isPrize ? (
           <>
-            <div className="prize">
+            <div className="text-yellow-400 text-3xl font-bold">
               {event.prizeAmount}
             </div>
-            <p className="note">
+            <p className="text-gray-400 text-sm">
               {event.prizeNote}
             </p>
           </>
         ) : (
-          <button className="learn">
+          <button className="flex items-center gap-2 text-gray-300 hover:text-yellow-400">
             Learn More
-            <ArrowRight size={18}/>
+            <ArrowRight size={18} />
           </button>
         )}
 
       </div>
-
     </div>
-
   );
-
 }
 
 ////////////////////////////////////////////////////////////
@@ -199,29 +178,41 @@ function EventCard({ event, index }: { event: Event; index: number }) {
 
 export default function Circuits() {
 
+  const { ref, visible } = useScrollReveal();
+
   return (
+    <section
+      ref={ref}
+      className="relative min-h-screen py-16 px-4"
+      style={{
+        backgroundImage:
+          "url(https://res.cloudinary.com/dkyvctkhf/image/upload/v1771483014/wxtoryrid7adydn0vkv8.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+    >
 
-    <section className="section">
+      <div className="absolute inset-0 bg-black/80"></div>
 
-      <div className="overlay"></div>
+      {[...Array(12)].map((_, i) => (
+        <Sparkle key={i} delay={i * 0.2} />
+      ))}
 
-      {[...Array(10)].map((_, i) =>
-        <Sparkle key={i} delay={i * 0.2}/>
-      )}
+      <div className="relative z-10 max-w-6xl mx-auto">
 
-      <div className="container">
-
-        <h2 className="heading">
+        <h2 className="text-white text-3xl md:text-5xl font-bold text-center mb-12">
           THE EVENTS
         </h2>
 
-        <div className="grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {events.map((event, index) => (
             <EventCard
               key={index}
               event={event}
               index={index}
+              visible={visible}
             />
           ))}
 
@@ -229,290 +220,136 @@ export default function Circuits() {
 
       </div>
 
-      <Styles/>
+      <IgnitionCSS />
 
     </section>
-
   );
-
 }
 
 ////////////////////////////////////////////////////////////
-// Styles
+// CSS
 ////////////////////////////////////////////////////////////
 
-function Styles() {
-
-return (
-
+function IgnitionCSS() {
+  return (
 <style>{`
-
-.section {
-
-  min-height: 100vh;
-  padding: 60px 16px;
-  position: relative;
-
-  background-image:
-  url(https://res.cloudinary.com/dkyvctkhf/image/upload/v1771483014/wxtoryrid7adydn0vkv8.jpg);
-
-  background-size: cover;
-}
-
-.overlay {
-
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-}
-
-.container {
-
-  position: relative;
-  max-width: 1200px;
-  margin: auto;
-}
-
-.heading {
-
-  text-align: center;
-  font-size: 32px;
-  color: white;
-  margin-bottom: 40px;
-}
-
-.grid {
-
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-@media(min-width:640px){
-
-  .grid{
-
-    grid-template-columns:1fr 1fr;
-
-  }
-
-}
-
-@media(min-width:1024px){
-
-  .grid{
-
-    grid-template-columns:1fr 1fr 1fr;
-
-  }
-
-}
-
-////////////////////////////////////////////////////////////
-// CARD BASE
-////////////////////////////////////////////////////////////
 
 .ignition-card {
 
-  background: rgba(0,0,0,0.5);
-  border-radius: 12px;
-  padding: 18px;
-  border: 1px solid rgba(255,215,0,0.2);
-
-  opacity: 0.4;
-  transform: scale(0.96);
-
   position: relative;
-  overflow: hidden;
-
-  transition: 0.4s;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,215,0,0.3);
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: scale(0.95);
 }
 
-////////////////////////////////////////////////////////////
-// IGNITION ANIMATION
-////////////////////////////////////////////////////////////
+.ignition-card.ignite {
 
-.ignite {
-
-  animation: ignite 0.7s forwards;
+  animation:
+    igniteCard 0.8s forwards,
+    glowLoop 2.5s infinite 0.8s;
 }
 
-@keyframes ignite {
+@keyframes igniteCard {
 
-  to{
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-    opacity:1;
-    transform:scale(1);
+}
+
+@keyframes glowLoop {
+
+  0% {
+
+    box-shadow:
+      0 0 10px rgba(255,215,0,0.3);
+
+  }
+
+  50% {
+
+    box-shadow:
+      0 0 25px rgba(255,215,0,0.8),
+      0 0 50px rgba(255,215,0,0.4);
+
+  }
+
+  100% {
+
+    box-shadow:
+      0 0 10px rgba(255,215,0,0.3);
 
   }
 
 }
 
-////////////////////////////////////////////////////////////
-// GOLD BORDER TRAVEL
-////////////////////////////////////////////////////////////
-
-.ignition-line {
+.ignition-border {
 
   position:absolute;
   inset:0;
-  border-radius:12px;
-  border:2px solid transparent;
+  border-radius:inherit;
 }
 
-.ignite .ignition-line{
+.ignite .ignition-border {
 
-  animation:borderRun 1s linear;
+  animation:borderRun 1.2s linear forwards;
 }
 
-@keyframes borderRun{
+@keyframes borderRun {
 
-0%{border-top-color:gold;}
-25%{border-right-color:gold;}
-50%{border-bottom-color:gold;}
-75%{border-left-color:gold;}
-100%{border-color:rgba(255,215,0,0.3);}
-
-}
-
-////////////////////////////////////////////////////////////
-// FLASH
-////////////////////////////////////////////////////////////
-
-.ignition-flash{
-
-position:absolute;
-top:0;
-left:0;
-width:8px;
-height:8px;
-background:gold;
-border-radius:50%;
-opacity:0;
+  0% { border-top:2px solid gold; }
+  25% { border-right:2px solid gold; }
+  50% { border-bottom:2px solid gold; }
+  75% { border-left:2px solid gold; }
 
 }
 
-.ignite .ignition-flash{
+.ignition-content {
 
-animation:flash .5s;
-}
-
-@keyframes flash{
-
-0%{opacity:0;transform:scale(0);}
-50%{opacity:1;transform:scale(2);}
-100%{opacity:0;}
+  opacity:0;
+  transform:translateY(10px);
 
 }
 
-////////////////////////////////////////////////////////////
-// CONTENT
-////////////////////////////////////////////////////////////
+.ignite .ignition-content {
 
-.ignition-content{
-
-opacity:0;
-transform:translateY(10px);
+  animation:contentFade 0.6s forwards 0.6s;
 
 }
 
-.ignite .ignition-content{
+@keyframes contentFade {
 
-animation:content .6s forwards;
-animation-delay:.4s;
+  to {
 
-}
+    opacity:1;
+    transform:translateY(0);
 
-@keyframes content{
-
-to{
-
-opacity:1;
-transform:none;
+  }
 
 }
 
-}
+.animate-sparkle {
 
-////////////////////////////////////////////////////////////
-// GLOW AFTER IGNITION
-////////////////////////////////////////////////////////////
-
-.glow{
-
-box-shadow:
-
-0 0 10px rgba(255,215,0,0.5),
-0 0 25px rgba(255,215,0,0.3),
-0 0 60px rgba(255,215,0,0.2);
+  animation:sparkle 3s infinite;
 
 }
 
-////////////////////////////////////////////////////////////
-// TEXT
-////////////////////////////////////////////////////////////
+@keyframes sparkle {
 
-.title{
-
-color:gold;
-font-size:16px;
-font-weight:bold;
-margin-bottom:6px;
-
-}
-
-.desc{
-
-color:#ccc;
-font-size:14px;
-margin-bottom:10px;
-
-}
-
-.learn{
-
-color:#aaa;
-display:flex;
-gap:6px;
-align-items:center;
-
-}
-
-.prize{
-
-color:gold;
-font-size:28px;
-font-weight:bold;
-
-}
-
-.note{
-
-color:#999;
-font-size:12px;
-
-}
-
-////////////////////////////////////////////////////////////
-// SPARKLE
-////////////////////////////////////////////////////////////
-
-@keyframes sparkle{
-
-0%{opacity:0;transform:translateY(0);}
-50%{opacity:1;}
-100%{opacity:0;transform:translateY(-20px);}
-
-}
-
-.animate-sparkle{
-
-animation:sparkle 3s infinite;
+  0% {opacity:0}
+  50% {opacity:1}
+  100% {
+    opacity:0;
+    transform:translateY(-20px)
+  }
 
 }
 
 `}</style>
-
-);
-
+  );
 }

@@ -30,7 +30,7 @@ export default function AboutGear() {
   });
 
   // Gear enters from left
-  const gearX = useTransform(scrollYProgress, [0, 1.0], [-500, -150]);
+  const gearX = useTransform(scrollYProgress, [0, 0.6], [-500, -150]);
 
   // Gear rotation
   const gearRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
